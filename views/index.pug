@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title Algoritmo cibo
+  body
+    h1 Calcolatrice orario di consegna
+    form(action="/calculate" method="POST")
+      div
+        label(for="timeSent") Orario di invio ordine (esempio: 12:15):
+        input(type="text" id="timeSent" name="timeSent" required)
+      div
+        label(for="peopleCount") Quante persone hanno ordinato?
+        input(type="number" id="peopleCount" name="peopleCount" min=0 value=0 required)
+      div
+        label(for="kebabCount") Numero di kebab:
+        input(type="number" id="kebabCount" name="kebabCount" min=0 value=0 required)
+      div
+        label(for="roundPizzaCount") Numero di pizze tonde:
+        input(type="number" id="roundPizzaCount" name="roundPizzaCount" min=0 value=0 required)
+      div
+        label(for="saladCount") Numero di insalate:
+        input(type="number" id="saladCount" name="saladCount" min=0 value=0 required)
+      div
+        label(for="slicedPizzaCount") Numero di pizza bianca:
+        input(type="number" id="slicedPizzaCount" name="slicedPizzaCount" min=0 value=0 required)
+      div
+        button(type="submit") Calcola
+    if results
+        h2 Il tuo cibo arriverà a questo orario:
+        h2= results
