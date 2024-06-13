@@ -49,6 +49,7 @@ function calculateTime(timeSent, minutesToAdd) {
     timestamp += minutesToAdd * 60
 
     const date = new Date(timestamp * 1000)
+    console.log("date", date)
     const dateOptions = {
         year: 'numeric',
         month: 'long',
