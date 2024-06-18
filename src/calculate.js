@@ -10,12 +10,14 @@ export function calculate(params) {
     } else if (params.kebabCount + params.roundPizzaCount + params.saladCount > params.peopleCount) {
         finalTime = 'Numero di cibo superiore al numero di persone, stai a trollà'
     } else {
+        minutesToAdd += (1 + getRandomInt(2)) //start preparing order
         minutesToAdd += (7 + getRandomInt(2)) * params.kebabCount
         minutesToAdd += (9 + getRandomInt(5)) * params.roundPizzaCount
         minutesToAdd += (3 + getRandomInt(3)) * params.saladCount
         minutesToAdd += (1 + getRandomInt(3)) * params.slicedPizzaCount
         minutesToAdd += 15 + getRandomInt(4) //car time
         minutesToAdd += (3 + getRandomInt(6)) * otherOrders
+        minutesToAdd += (1 + getRandomInt(1)) * params.peopleCount //get the drinks
 
         let isFast = getRandomInt(1)
         console.log("isFast", isFast)
