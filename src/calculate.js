@@ -11,15 +11,25 @@ export function calculate(params) {
         finalTime = 'Numero di cibo superiore al numero di persone, stai a trollà'
     } else {
         minutesToAdd += (1 + getRandomInt(2)) //start preparing order
+        console.log(minutesToAdd)
         minutesToAdd += (7 + getRandomInt(2)) * params.kebabCount
+        console.log(minutesToAdd)
         minutesToAdd += (9 + getRandomInt(5)) * params.roundPizzaCount
+        console.log(minutesToAdd)
         minutesToAdd += (3 + getRandomInt(3)) * params.saladCount
+        console.log(minutesToAdd)
         minutesToAdd += (1 + getRandomInt(3)) * params.slicedPizzaCount
+        console.log(minutesToAdd)
         minutesToAdd += (3 + getRandomInt(6)) * otherOrders
+        console.log(minutesToAdd)
         minutesToAdd += (1 + getRandomInt(1)) * params.peopleCount //get the drinks
+        console.log(minutesToAdd)
         minutesToAdd += (1 + getRandomInt(2)) //get order ready to go
+        console.log(minutesToAdd)
         minutesToAdd += (15 + getRandomInt(6)) //car time
+        console.log(minutesToAdd)
         minutesToAdd += (4 + getRandomInt(2)) //walk to the office
+        console.log(minutesToAdd)
 
         let isFast = getRandomInt(1)
         console.log("isFast", isFast)
@@ -27,6 +37,7 @@ export function calculate(params) {
             minutesToAdd = Math.floor(minutesToAdd * 0.9)
             console.log('fast triggered', minutesToAdd)
         }
+        console.log("final minutes count", minutesToAdd)
 
         finalTime = calculateTime(params.timeSent, minutesToAdd)
     }
