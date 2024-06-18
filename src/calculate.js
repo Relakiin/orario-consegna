@@ -26,17 +26,24 @@ export function calculate(params) {
         console.log(minutesToAdd)
         minutesToAdd += (1 + getRandomInt(0, 1)) //get order ready to go
         console.log(minutesToAdd)
-        minutesToAdd += (15 + getRandomInt(0, 5)) //car time
+        minutesToAdd += (15 + getRandomInt(0, 10)) //car time
         console.log(minutesToAdd)
         minutesToAdd += (4 + getRandomInt(0, 2)) //walk to the office
         console.log(minutesToAdd)
 
-        let isFast = getRandomInt(0, 1)
-        console.log("isFast", !!isFast)
-        if (!!isFast) {
+        let speed = getRandomInt(0, 2)
+        console.log("speed", speed)
+
+        if (speed === 1) {
             minutesToAdd = Math.floor(minutesToAdd * 0.9)
             console.log('fast triggered', minutesToAdd)
+        } else if (speed === 2) {
+            minutesToAdd = Math.floor(minutesToAdd * 1.2)
+            console.log('slow triggered', minutesToAdd)
+        } else if (speed === 0) {
+            console.log("no speed change")
         }
+
         console.log("final minutes count", minutesToAdd)
 
         finalTime = calculateTime(params.timeSent, minutesToAdd)
