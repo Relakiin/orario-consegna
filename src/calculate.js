@@ -15,9 +15,10 @@ export function calculate(params) {
         minutesToAdd += (9 + getRandomInt(5)) * params.roundPizzaCount
         minutesToAdd += (3 + getRandomInt(3)) * params.saladCount
         minutesToAdd += (1 + getRandomInt(3)) * params.slicedPizzaCount
-        minutesToAdd += 15 + getRandomInt(4) //car time
         minutesToAdd += (3 + getRandomInt(6)) * otherOrders
         minutesToAdd += (1 + getRandomInt(1)) * params.peopleCount //get the drinks
+        minutesToAdd += (1 + getRandomInt(2)) //get order ready to go
+        minutesToAdd += 15 + getRandomInt(4) //car time
 
         let isFast = getRandomInt(1)
         console.log("isFast", isFast)
