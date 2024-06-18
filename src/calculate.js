@@ -10,29 +10,29 @@ export function calculate(params) {
     } else if (params.kebabCount + params.roundPizzaCount + params.saladCount > params.peopleCount) {
         finalTime = 'Numero di cibo superiore al numero di persone, stai a trollà'
     } else {
-        minutesToAdd += (1 + getRandomInt(2)) //start preparing order
+        minutesToAdd += (1 + getRandomInt(0, 2)) //start preparing order
         console.log(minutesToAdd)
-        minutesToAdd += (7 + getRandomInt(2)) * params.kebabCount
+        minutesToAdd += (7 + getRandomInt(0, 2)) * params.kebabCount
         console.log(minutesToAdd)
-        minutesToAdd += (9 + getRandomInt(5)) * params.roundPizzaCount
+        minutesToAdd += (9 + getRandomInt(0, 5)) * params.roundPizzaCount
         console.log(minutesToAdd)
-        minutesToAdd += (3 + getRandomInt(3)) * params.saladCount
+        minutesToAdd += (3 + getRandomInt(0, 3)) * params.saladCount
         console.log(minutesToAdd)
-        minutesToAdd += (1 + getRandomInt(3)) * params.slicedPizzaCount
+        minutesToAdd += (1 + getRandomInt(0, 3)) * params.slicedPizzaCount
         console.log(minutesToAdd)
-        minutesToAdd += (3 + getRandomInt(6)) * otherOrders
+        minutesToAdd += (3 + getRandomInt(0, 6)) * otherOrders
         console.log(minutesToAdd)
-        minutesToAdd += (1 + getRandomInt(1)) * params.peopleCount //get the drinks
+        minutesToAdd += (1 + getRandomInt(0, 1)) * params.peopleCount //get the drinks
         console.log(minutesToAdd)
-        minutesToAdd += (1 + getRandomInt(2)) //get order ready to go
+        minutesToAdd += (1 + getRandomInt(0, 2)) //get order ready to go
         console.log(minutesToAdd)
-        minutesToAdd += (15 + getRandomInt(6)) //car time
+        minutesToAdd += (15 + getRandomInt(0, 6)) //car time
         console.log(minutesToAdd)
-        minutesToAdd += (4 + getRandomInt(2)) //walk to the office
+        minutesToAdd += (4 + getRandomInt(0, 2)) //walk to the office
         console.log(minutesToAdd)
 
-        let isFast = getRandomInt(1)
-        console.log("isFast", isFast)
+        let isFast = getRandomInt(0, 1)
+        console.log("isFast", !!isFast)
         if (!!isFast) {
             minutesToAdd = Math.floor(minutesToAdd * 0.9)
             console.log('fast triggered', minutesToAdd)
@@ -45,10 +45,8 @@ export function calculate(params) {
     return finalTime
 }
 
-function getRandomInt(max) {
-    let random = Math.floor(Math.random() * max)
-    console.log(random)
-    return random
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
 function calculateTime(timeSent, minutesToAdd) {
