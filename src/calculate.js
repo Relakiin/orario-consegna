@@ -10,23 +10,23 @@ export function calculate(params) {
     } else if (params.kebabCount + params.roundPizzaCount + params.saladCount > params.peopleCount) {
         finalTime = 'Numero di cibo superiore al numero di persone, stai a trollà'
     } else {
-        minutesToAdd += (1 + getRandomInt(0, 2)) //start preparing order
+        minutesToAdd += (1 + getRandomInt(0, 1)) //start preparing order
         console.log(minutesToAdd)
-        minutesToAdd += (7 + getRandomInt(0, 2)) * params.kebabCount
+        minutesToAdd += (7 + getRandomInt(0, 1)) * params.kebabCount
         console.log(minutesToAdd)
-        minutesToAdd += (9 + getRandomInt(0, 5)) * params.roundPizzaCount
+        minutesToAdd += (9 + getRandomInt(0, 4)) * params.roundPizzaCount
         console.log(minutesToAdd)
-        minutesToAdd += (3 + getRandomInt(0, 3)) * params.saladCount
+        minutesToAdd += (3 + getRandomInt(0, 2)) * params.saladCount
         console.log(minutesToAdd)
-        minutesToAdd += (1 + getRandomInt(0, 3)) * params.slicedPizzaCount
+        minutesToAdd += (1 + getRandomInt(0, 2)) * params.slicedPizzaCount
         console.log(minutesToAdd)
-        minutesToAdd += (3 + getRandomInt(0, 6)) * otherOrders
+        minutesToAdd += (3 + getRandomInt(0, 5)) * otherOrders
         console.log(minutesToAdd)
         minutesToAdd += (1 + getRandomInt(0, 1)) * params.peopleCount //get the drinks
         console.log(minutesToAdd)
-        minutesToAdd += (1 + getRandomInt(0, 2)) //get order ready to go
+        minutesToAdd += (1 + getRandomInt(0, 1)) //get order ready to go
         console.log(minutesToAdd)
-        minutesToAdd += (15 + getRandomInt(0, 6)) //car time
+        minutesToAdd += (15 + getRandomInt(0, 5)) //car time
         console.log(minutesToAdd)
         minutesToAdd += (4 + getRandomInt(0, 2)) //walk to the office
         console.log(minutesToAdd)
