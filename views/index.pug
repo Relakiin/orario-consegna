@@ -38,6 +38,11 @@ html
       .btn-primary, .btn-secondary {
         width: 100%;
       }
+      .btn-pending {
+        background-color: #dc3545; /* Red color for pending orders */
+        width: 100%;
+        color: #fff;
+      }
   body
     .container
       .form-container
@@ -65,11 +70,17 @@ html
             label(for="hotFoodCount") Numero di cibo che va riscaldato:
             input.form-control(type="number" id="hotFoodCount" name="hotFoodCount" min=0 value=0 required)
           .form-group
-            button.btn.btn-primary(type="submit") Calcola
+            button.btn.btn-primary(type="submit") Calcola e salva
       .info-container
-        h1.mt-4 Vai alla Gestione Ordini
+        h1.mt-4 Gestione Ordini
         form(action="/orders")
           .form-group
-            button.btn.btn-secondary(type="submit") Ordini
+            if pendingOrders > 0
+              button.btn.btn-pending(type="submit") Ordini in pending (#{pendingOrders})
+            else
+              button.btn.btn-primary(type="submit") Ordini in pending
+        form(action="/history")
+          .form-group
+            button.btn.btn-secondary(type="submit") Storico ordini
         if message
           h2= message

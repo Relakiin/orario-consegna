@@ -16,17 +16,9 @@ export async function calculate({ timeSent, peopleCount, preparation, orderData,
         return 'Oggi non si mangia'
     }
 
-    //insert order in database
-    await insertOrder({
-        food: orderData,
-        sent_at: timeSent,
-        status: 'pending',
-        good: false,
-        predicted: false
-    })
-
     //half round pizza count to account for oven size
-    orderData.roundPizza.count = Math.ceil(orderData.roundPizza.count / 2);
+    const originalPizzaCount = orderData.roundPizza.count
+    orderData.roundPizza.count = Math.ceil(orderData.roundPizza.count / 2)
 
     let minutesToAdd = 0
     const calculateAdditionalMinutes = (weight, variance) => {
@@ -65,27 +57,35 @@ export async function calculate({ timeSent, peopleCount, preparation, orderData,
     }
 
     console.log(`Order simulation complete! Final minutes calculated = ${minutesToAdd}`)
-    const finalTime = calculateTime(hours, minutes, minutesToAdd)
+    const sentTimestamp = calculateTimestamp(hours, minutes)
+    console.log(`Adding ${minutesToAdd} minutes to when the order was sent...`)
+    const finalTimestamp = sentTimestamp + (minutesToAdd * 60)
 
-    return finalTime
+    //insert order in database
+    orderData.roundPizza.count = originalPizzaCount
+    await insertOrder({
+        food: orderData,
+        sent_at: sentTimestamp,
+        predicted_time: finalTimestamp,
+        status: 'pending',
+        good: false,
+        correct_prediction: false,
+    })
+
+    const date = new Date(finalTimestamp * 1000)
+    const formattedDate = date.toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })
+    const formattedTime = date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+
+    console.log(`... your food will arrive at ${formattedDate}, ${formattedTime}`)
+    return `Il tuo cibo arriverà a questo orario: ${formattedDate}, ${formattedTime}`
 }
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function calculateTime(hours, minutes, minutesToAdd) {
+export function calculateTimestamp(hours, minutes) {
     const currentDate = new Date()
     currentDate.setHours(hours, minutes, 0, 0)
-    let timestamp = Math.floor(currentDate.getTime() / 1000)
-
-    console.log(`Adding ${minutesToAdd} minutes to when the order was sent...`)
-    timestamp += minutesToAdd * 60
-
-    const date = new Date(timestamp * 1000)
-    const formattedDate = date.toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })
-    const formattedTime = date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
-
-    console.log(`... your food will arrive at ${formattedDate}, ${formattedTime}`)
-    return `Il tuo cibo arriverà a questo orario: ${formattedDate}, ${formattedTime}`
+    return Math.floor(currentDate.getTime() / 1000)
 }

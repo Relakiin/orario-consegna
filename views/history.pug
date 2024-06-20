@@ -1,0 +1,44 @@
+doctype html
+html
+  head
+    title Storico ordini
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+    script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
+  body
+    .container
+      h1 Storico ordini
+      button.btn.btn-primary.mb-3(type='button', onclick="window.location.href='/'") Ritorna alla home
+      button.btn.btn-secondary.mb-3.ml-2(type='button', onclick="window.location.href='/orders'") Gestione ordini
+      .card.mb-3
+        .card-body
+          h5.card-title Punti totali vinti con l'algoritmo: #{totalPoints}
+      if orders.length > 0
+        each order, index in orders
+          .card.mb-3
+            .card-header
+              h5.mb-0
+                button.btn.btn-link(type='button', data-toggle='collapse', data-target=`#collapseOrder${index}`, aria-expanded='true', aria-controls=`collapseOrder${index}`)
+                  | Ordine ##{order._id} - #{new Date(order.sent_at).toLocaleDateString('it-IT')}
+            .collapse(id=`collapseOrder${index}`)
+              .card-body
+                h5.card-title Ordine ##{order._id}
+                p.card-text
+                  | Cibo:
+                  ul
+                    each value, key in order.food
+                      li #{foodNames[key] || key}: #{value.count}
+                  | Orario di invio: #{new Date(order.sent_at).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
+                  br
+                  | Orario predetto: #{new Date(order.predicted_time).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
+                  br
+                  | Orario di arrivo: #{order.arrived_at ? new Date(order.arrived_at).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
+                  br
+                  | Giusto (l'ordine non è stato sbagliato): #{order.good ? 'Sì' : 'No'}
+                  br
+                  | Predetto correttamente: #{order.correct_prediction ? 'Sì' : 'No'}
+                  br
+                  | Punti assegnati: #{order.points_scored || 0}
+      else
+        .alert.alert-warning Nessun ordine nello storico

@@ -2,7 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import { calculate } from './calculate.js'
-import { Order } from './order.js'
+import { Order, calculateScore } from './order.js'
 dotenv.config({
     path: '.env',
 })
@@ -16,9 +16,10 @@ app.set('view engine', 'pug')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.get('/', (req, res) => {
+app.get('/', async(req, res) => {
     const message = req.query.message || ''
-    res.render('index', { message })
+    const pendingOrders = await Order.countDocuments({status: "pending"})
+    res.render('index', { message, pendingOrders })
 })
 
 app.post('/calculate', async (req, res) => {
@@ -82,13 +83,25 @@ app.get('/orders', async (req, res) => {
     }
 })
 
+app.get('/history', async (req, res) => {
+    try {
+        const orders = await Order.find().where('status').equals('confirmed').exec()
+        const totalPoints = orders.reduce((sum, order) => sum + (order.points_scored || 0), 0);
+        res.render('history', { orders, foodNames, totalPoints })
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+})
+
 app.post('/orders/:id/', async (req, res) => {
     try {
         const { id } = req.params
-        const { arrived_at, good, predicted, status } = req.body
+        const { arrived_at, good, status, predicted_time } = req.body
         const [arriveHours, arriveMinutes] = arrived_at.split(':').map(Number)
-        const arriveTimestamp = new Date().setUTCHours(arriveHours, arriveMinutes, 0, 0)
-        await Order.findByIdAndUpdate(id, { arrived_at: new Date(arriveTimestamp), good, predicted, status })
+        const arriveTimestamp = new Date().setHours(arriveHours, arriveMinutes, 0, 0)
+        const points_scored = calculateScore({ predicted_time: new Date(predicted_time), arrived_at: new Date(arriveTimestamp) })
+        console.log(points_scored)
+        await Order.findByIdAndUpdate(id, { arrived_at: new Date(arriveTimestamp), good, correct_prediction: points_scored === 0 ? false : true, status, points_scored })
         res.json({ success: true })
     } catch (err) {
         res.status(500).json({ success: false, message: err.message })

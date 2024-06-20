@@ -2,41 +2,38 @@ import mongoose from 'mongoose'
 const orderSchema = new mongoose.Schema({
     food: {
         type: Object,
-        required: true
+        required: true,
     },
     sent_at: {
         type: Date,
-        required: true
+        required: true,
     },
     arrived_at: {
+        type: Date,
+    },
+    predicted_time: {
         type: Date,
     },
     good: {
         type: Boolean,
     },
-    predicted: {
+    correct_prediction: {
         type: Boolean,
     },
     status: {
-        type: String
+        type: String,
+    },
+    points_scored: {
+        type: Number
     }
 })
 export const Order = mongoose.model('Order', orderSchema)
 
-export async function insertOrder({food, sent_at, arrived_at, good, predicted, status}) {
-    let sentTimestamp;
-    let arriveTimestamp;
-    if (arrived_at) {
-        const [arriveHours, arriveMinutes] = arrived_at.split(':').map(Number)
-        arriveTimestamp = new Date().setUTCHours(arriveHours, arriveMinutes, 0, 0)
-        arrived_at = new Date(arriveTimestamp)
-    }
-    const [sentHours, sentMinutes] = sent_at.split(':').map(Number)
-    sentTimestamp = new Date().setUTCHours(sentHours, sentMinutes, 0, 0)
+export async function insertOrder({ food, sent_at, predicted_time, good, correct_prediction, status }) {
+    sent_at = new Date(sent_at * 1000)
+    predicted_time = new Date(predicted_time * 1000)
 
-    sent_at = new Date(sentTimestamp)
-
-    const order = new Order({ food, sent_at, good, predicted, status })
+    const order = new Order({ food, sent_at, good, correct_prediction, status, predicted_time })
 
     try {
         await order.save()
@@ -45,3 +42,20 @@ export async function insertOrder({food, sent_at, arrived_at, good, predicted, s
         return "Errore nell'inserimento nel db, contatta il demone"
     }
 }
+
+export function calculateScore({predicted_time, arrived_at}) {
+
+    let differenceInMillis = Math.abs(predicted_time - arrived_at);
+    let differenceInMinutes = Math.floor(differenceInMillis / 60000);
+
+    if (differenceInMinutes === 0) {
+        return 3;
+    } else if (differenceInMinutes <= 1) {
+        return 2;
+    } else if (differenceInMinutes <= 2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
