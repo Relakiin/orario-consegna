@@ -55,7 +55,7 @@ html
                   br
                   | Orario di arrivo: #{order.arrived_at ? new Date(order.arrived_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                   br
-                  | Giusto (l'ordine non è stato sbagliato): #{order.good ? 'Sì' : 'No'}
+                  | Giusto (il cibo arrivato non era sbagliato/mancante): #{order.good ? 'Sì' : 'No'}
                   br
                   | Predetto correttamente: #{order.correct_prediction ? 'Sì' : 'No'}
                   br
