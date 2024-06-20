@@ -29,11 +29,11 @@ html
                   ul
                     each value, key in order.food
                       li #{foodNames[key] || key}: #{value.count}
-                  | Orario di invio: #{new Date(order.sent_at).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
+                  | Orario di invio: #{new Date(order.sent_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
                   br
-                  | Orario predetto: #{new Date(order.predicted_time).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
+                  | Orario predetto: #{new Date(order.predicted_time).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
                   br
-                  | Orario di arrivo: #{order.arrived_at ? new Date(order.arrived_at).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
+                  | Orario di arrivo: #{order.arrived_at ? new Date(order.arrived_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                   br
                   | Giusto (l'ordine non è stato sbagliato): #{order.good ? 'Sì' : 'No'}
                   br
