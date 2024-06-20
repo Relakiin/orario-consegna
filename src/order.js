@@ -24,7 +24,6 @@ const orderSchema = new mongoose.Schema({
 export const Order = mongoose.model('Order', orderSchema)
 
 export async function insertOrder({food, sent_at, arrived_at, good, predicted, status}) {
-    console.log("SAVING NEW INCOMING ORDER:", {food, sent_at, status})
     let sentTimestamp;
     let arriveTimestamp;
     if (arrived_at) {
@@ -38,7 +37,6 @@ export async function insertOrder({food, sent_at, arrived_at, good, predicted, s
     sent_at = new Date(sentTimestamp)
 
     const order = new Order({ food, sent_at, good, predicted, status })
-    console.log(order)
 
     try {
         await order.save()
