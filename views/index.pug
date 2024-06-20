@@ -1,30 +1,75 @@
 doctype html
 html
   head
-    title Algoritmo cibo
+    title Algoritmo Cibo
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+    style.
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background-color: #f8f9fa;
+      }
+      .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 900px;
+        width: 100%;
+        margin: 20px;
+      }
+      .form-container, .info-container {
+        width: 48%;
+      }
+      h1 {
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .btn-primary, .btn-secondary {
+        width: 100%;
+      }
   body
-    h1 Calcolatrice orario di consegna
-    form(action="/calculate" method="POST")
-      div
-        label(for="timeSent") Orario di invio ordine (esempio: 12:15):
-        input(type="text" id="timeSent" name="timeSent" required)
-      div
-        label(for="peopleCount") Quante persone hanno ordinato?
-        input(type="number" id="peopleCount" name="peopleCount" min=0 value=0 required)
-      div
-        label(for="kebabCount") Numero di kebab:
-        input(type="number" id="kebabCount" name="kebabCount" min=0 value=0 required)
-      div
-        label(for="roundPizzaCount") Numero di pizze tonde:
-        input(type="number" id="roundPizzaCount" name="roundPizzaCount" min=0 value=0 required)
-      div
-        label(for="saladCount") Numero di insalate:
-        input(type="number" id="saladCount" name="saladCount" min=0 value=0 required)
-      div
-        label(for="slicedPizzaCount") Numero di pizza bianca:
-        input(type="number" id="slicedPizzaCount" name="slicedPizzaCount" min=0 value=0 required)
-      div
-        button(type="submit") Calcola
-    if results
-      h2 Il tuo cibo arriverà a questo orario:
-      h2= results
+    .container
+      .form-container
+        h1 Calcolatrice orario di consegna
+        form(action="/calculate" method="POST")
+          .form-group
+            label(for="timeSent") Orario di invio:
+            input.form-control(type="text" id="timeSent" name="timeSent" required placeholder='HH:MM')
+          .form-group
+            label(for="peopleCount") Quante persone hanno ordinato?
+            input.form-control(type="number" id="peopleCount" name="peopleCount" min=0 value=0 required)
+          .form-group
+            label(for="kebabCount") Numero di kebab:
+            input.form-control(type="number" id="kebabCount" name="kebabCount" min=0 value=0 required)
+          .form-group
+            label(for="roundPizzaCount") Numero di pizze tonde:
+            input.form-control(type="number" id="roundPizzaCount" name="roundPizzaCount" min=0 value=0 required)
+          .form-group
+            label(for="saladCount") Numero di insalate:
+            input.form-control(type="number" id="saladCount" name="saladCount" min=0 value=0 required)
+          .form-group
+            label(for="slicedPizzaCount") Numero di pizza bianca:
+            input.form-control(type="number" id="slicedPizzaCount" name="slicedPizzaCount" min=0 value=0 required)
+          .form-group
+            label(for="hotFoodCount") Numero di cibo che va riscaldato:
+            input.form-control(type="number" id="hotFoodCount" name="hotFoodCount" min=0 value=0 required)
+          .form-group
+            button.btn.btn-primary(type="submit") Calcola
+      .info-container
+        h1.mt-4 Vai alla Gestione Ordini
+        form(action="/orders")
+          .form-group
+            button.btn.btn-secondary(type="submit") Ordini
+        if message
+          h2= message

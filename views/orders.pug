@@ -1,0 +1,69 @@
+doctype html
+html
+  head
+    title Gestione ordini
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+    script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
+  body
+    .container
+      h1 Ordini in pending
+      button.btn.btn-primary.mb-3(type='button', onclick="window.location.href='/'") Ritorna alla home
+      if orders.length > 0
+        each order in orders
+          .card.mb-3
+            .card-body
+              h5.card-title Ordine ##{order._id}
+              p.card-text
+                | Cibo:
+                ul
+                  each value, key in order.food
+                    li #{foodNames[key] || key}: #{value.count}
+                | Inviato alle: #{new Date(order.sent_at).toLocaleString()}
+                br
+                | Orario di arrivo: 
+                input(type='text', id=`arrived_at-${order._id}`, value=`${order.arrived_at ? new Date(order.arrived_at).toISOString().slice(0, 16) : ''}`, placeholder='HH:MM')
+                br 
+                | Giusto (l'ordine non è stato sbagliato): 
+                input(type='checkbox', id=`good-${order._id}`, checked=order.good)
+                br
+                | Predetto: 
+                input(type='checkbox', id=`predicted-${order._id}`, checked=order.predicted)
+              .mt-3
+                button.btn.btn-danger(type='button', onclick=`deleteOrder('${order._id}')`) Cancella
+                button.btn.btn-success(type='button', onclick=`confirmOrder('${order._id}')`) Conferma
+      else
+        .alert.alert-warning Nessun ordine da confermare
+    script.
+      async function deleteOrder(orderId) {
+        console.log('Deleting order:', orderId);
+        await fetch(`/orders/${orderId}`, {
+          method: 'DELETE'
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while confirming the order');
+        });
+        location.reload()
+      }
+
+      async function confirmOrder(orderId) {
+        let arrived_at = document.getElementById(`arrived_at-${orderId}`).value;
+        const good = document.getElementById(`good-${orderId}`).checked;
+        const predicted = document.getElementById(`predicted-${orderId}`).checked;
+        const status = "confirmed"
+        console.log(JSON.stringify({ arrived_at, good, predicted, status }));
+        await fetch(`/orders/${orderId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: "" + JSON.stringify({ arrived_at, good, predicted, status })
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while confirming the order');
+        });
+        location.reload()
+      }
