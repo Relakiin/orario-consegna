@@ -6,6 +6,23 @@ html
     script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
     script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
+    script.
+      function toggleCorrectPredictions() {
+        var showOnlyCorrect = document.getElementById('showCorrectPredictions').checked;
+        var orders = document.querySelectorAll('.order-card');
+        orders.forEach(function(order) {
+          var correctPrediction = order.getAttribute('data-correct-prediction') === 'true';
+          if (showOnlyCorrect) {
+            if (correctPrediction) {
+              order.style.display = 'block';
+            } else {
+              order.style.display = 'none';
+            }
+          } else {
+            order.style.display = 'block';
+          }
+        });
+      }
   body
     .container
       h1 Storico ordini
@@ -14,9 +31,12 @@ html
       .card.mb-3
         .card-body
           h5.card-title Punti totali vinti con l'algoritmo: #{totalPoints}
+      .form-check.mb-3
+        input.form-check-input(type='checkbox', id='showCorrectPredictions', onclick='toggleCorrectPredictions()')
+        label.form-check-label(for='showCorrectPredictions') Mostra solo ordini con predizione corretta
       if orders.length > 0
         each order, index in orders
-          .card.mb-3
+          .card.mb-3.order-card(data-correct-prediction=order.correct_prediction ? 'true' : 'false')
             .card-header
               h5.mb-0
                 button.btn.btn-link(type='button', data-toggle='collapse', data-target=`#collapseOrder${index}`, aria-expanded='true', aria-controls=`collapseOrder${index}`)
