@@ -16,6 +16,16 @@ app.set('view engine', 'pug')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+const foodNames = {
+    roundPizza: 'Pizze tonde',
+    salad: 'Insalate',
+    kebab: 'Kebab',
+    drink: 'Bevande',
+    slicedPizza: 'Pizze bianche',
+    hotFood: 'Cibo riscaldato',
+    other: 'Altri cibi',
+}
+
 app.get('/', async (req, res) => {
     const message = req.query.message || ''
     const pendingOrders = await Order.countDocuments({ status: 'pending' })
@@ -51,7 +61,7 @@ app.post('/calculate', async (req, res) => {
             slicedPizza: { count: slicedPizzaCount, weight: 1, variance: 2 },
             hotFood: { count: hotFoodCount, weight: 5, variance: 2 },
             other: {
-                count: peopleCount - (kebabCount + roundPizzaCount + saladCount + slicedPizzaCount + hotFoodCount),
+                count: peopleCount - (kebabCount + roundPizzaCount + saladCount + hotFoodCount),
                 weight: 3,
                 variance: 1,
             },
@@ -63,16 +73,6 @@ app.post('/calculate', async (req, res) => {
     })
     res.redirect(`/?message=${resultValue}`)
 })
-
-const foodNames = {
-    roundPizza: 'Pizze tonde',
-    salad: 'Insalate',
-    kebab: 'Kebab',
-    drink: 'Bevande',
-    slicedPizza: 'Pizze bianche',
-    hotFood: 'Cibo riscaldato',
-    other: 'Altri cibi',
-}
 
 app.get('/orders', async (req, res) => {
     try {
@@ -126,20 +126,20 @@ app.delete('/orders/:id/', async (req, res) => {
 
 app.delete('/softdelete/:id', async (req, res) => {
     try {
-      const orderId = req.params.id;
-      const order = await Order.findById(orderId);
-      if (!order) {
-        return res.status(404).json({ success: false, message: 'Order not found' });
-      }
-  
-      const deletedOrder = new DeletedOrder(order.toObject());
-      await deletedOrder.save();
-      await Order.findByIdAndDelete(orderId);
-      res.json({ success: true });
+        const orderId = req.params.id
+        const order = await Order.findById(orderId)
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' })
+        }
+
+        const deletedOrder = new DeletedOrder(order.toObject())
+        await deletedOrder.save()
+        await Order.findByIdAndDelete(orderId)
+        res.json({ success: true })
     } catch (error) {
-      res.status(500).json({ success: false, message: error.toString() });
+        res.status(500).json({ success: false, message: error.toString() })
     }
-  });
+})
 
 const port = process.env.PORT || 3001
 app.listen(port, () => {
