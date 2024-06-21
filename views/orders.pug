@@ -12,57 +12,82 @@ html
       button.btn.btn-primary.mb-3(type='button', onclick="window.location.href='/'") Ritorna alla home
       button.btn.btn-secondary.mb-3.ml-2(type='button', onclick="window.location.href='/history'") Vedi storico
       if orders.length > 0
-        each order in orders
-          .card.mb-3
-            .card-body
-              h5.card-title Ordine ##{order._id}
-              p.card-text
-                | Cibo:
-                ul
-                  each value, key in order.food
-                    li #{foodNames[key] || key}: #{value.count}
-                | Orario di invio: #{new Date(order.sent_at).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
-                br
-                | Orario predetto: #{new Date(order.predicted_time).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
-                br
-                | Orario di arrivo: 
-                input(type='text', id=`arrived_at-${order._id}`, value=`${order.arrived_at ? new Date(order.arrived_at).toISOString().slice(0, 16) : ''}`, placeholder='HH:MM' required)
-                br 
-                | Giusto (l'ordine non è stato sbagliato): 
-                input(type='checkbox', id=`good-${order._id}`, checked=order.good)
-              .mt-3
-                button.btn.btn-danger(type='button', onclick=`deleteOrder('${order._id}')`) Cancella
-                button.btn.btn-success(type='button', onclick=`confirmOrder('${order._id}', '${order.predicted_time}')`) Conferma
+        #order-list
+          each order in orders
+            .card.mb-3(id=`order-${order._id}`)
+              .card-body
+                h5.card-title Ordine ##{order._id}
+                p.card-text
+                  | Cibo:
+                  ul
+                    each value, key in order.food
+                      li #{foodNames[key] || key}: #{value.count}
+                  | Orario di invio: #{new Date(order.sent_at).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
+                  br
+                  | Orario predetto: #{new Date(order.predicted_time).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
+                  br
+                  | Orario di arrivo: 
+                  input(type='text', id=`arrived_at-${order._id}`, value=`${order.arrived_at ? new Date(order.arrived_at).toISOString().slice(0, 16) : ''}`, placeholder='HH:MM' required)
+                  br 
+                  | Giusto (l'ordine non è stato sbagliato): 
+                  input(type='checkbox', id=`good-${order._id}`, checked=order.good)
+                .mt-3
+                  button.btn.btn-danger(type='button', onclick=`deleteOrder('${order._id}')`) Cancella
+                  button.btn.btn-success(type='button', onclick=`confirmOrder('${order._id}', '${order.predicted_time}')`) Conferma
       else
         .alert.alert-warning Nessun ordine da confermare
     script.
       async function deleteOrder(orderId) {
-        await fetch(`/orders/${orderId}`, {
-          method: 'DELETE'
-        })
-        .catch(error => {
+        try {
+          const response = await fetch(`/orders/${orderId}`, {
+            method: 'DELETE'
+          });
+          if (response.ok) {
+            document.getElementById(`order-${orderId}`).remove();
+            checkForRemainingOrders();
+          } else {
+            console.error('Error:', response.statusText);
+            alert('An error occurred while deleting the order');
+          }
+        } catch (error) {
           console.error('Error:', error);
-          alert('An error occurred while confirming the order');
-        });
-        location.reload()
+          alert('An error occurred while deleting the order');
+        }
       }
 
       async function confirmOrder(orderId, predictTime) {
         const arrived_at = document.getElementById(`arrived_at-${orderId}`).value;
         const good = document.getElementById(`good-${orderId}`).checked;
-        const predicted_time = predictTime
-        const status = "confirmed"
+        const predicted_time = predictTime;
+        const status = "confirmed";
 
-        await fetch(`/orders/${orderId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: "" + JSON.stringify({ arrived_at, good, predicted_time, status })
-        })
-        .catch(error => {
+        try {
+          const response = await fetch(`/orders/${orderId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ arrived_at, good, predicted_time, status })
+          });
+          if (response.ok) {
+            document.getElementById(`order-${orderId}`).remove();
+            checkForRemainingOrders();
+          } else {
+            console.error('Error:', response.statusText);
+            alert('An error occurred while confirming the order');
+          }
+        } catch (error) {
           console.error('Error:', error);
           alert('An error occurred while confirming the order');
-        });
-        location.reload()
+        }
+      }
+
+      function checkForRemainingOrders() {
+        const orderList = document.getElementById('order-list');
+        if (!orderList.hasChildNodes()) {
+          const alertWarning = document.createElement('div');
+          alertWarning.classList.add('alert', 'alert-warning');
+          alertWarning.textContent = 'Nessun ordine da confermare';
+          orderList.parentNode.appendChild(alertWarning);
+        }
       }

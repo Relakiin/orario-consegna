@@ -29,6 +29,36 @@ const orderSchema = new mongoose.Schema({
 })
 export const Order = mongoose.model('Order', orderSchema)
 
+const deletedOrderSchema = new mongoose.Schema({
+    food: {
+        type: Object,
+        required: true,
+    },
+    sent_at: {
+        type: Date,
+        required: true,
+    },
+    arrived_at: {
+        type: Date,
+    },
+    predicted_time: {
+        type: Date,
+    },
+    good: {
+        type: Boolean,
+    },
+    correct_prediction: {
+        type: Boolean,
+    },
+    status: {
+        type: String,
+    },
+    points_scored: {
+        type: Number
+    }
+})
+export const DeletedOrder = mongoose.model('DeletedOrder', deletedOrderSchema)
+
 export async function insertOrder({ food, sent_at, predicted_time, good, correct_prediction, status }) {
     sent_at = new Date(sent_at * 1000)
     predicted_time = new Date(predicted_time * 1000)
