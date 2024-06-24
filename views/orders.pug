@@ -27,9 +27,9 @@ html
                   | Orario predetto: #{new Date(order.predicted_time).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
                   br
                   | Orario di arrivo: 
-                  input(type='text', id=`arrived_at-${order._id}`, value=`${order.arrived_at ? new Date(order.arrived_at).toISOString().slice(0, 16) : ''}`, placeholder='HH:MM' required)
+                  input(type='text', id=`arrived_at-${order._id}`, value=`${order.arrived_at || ''}`, placeholder='HH:MM' required)
                   br 
-                  | Giusto (l'ordine non è stato sbagliato): 
+                  | Consegna buona (cibo non sbagliato/mancante): 
                   input(type='checkbox', id=`good-${order._id}`, checked=order.good)
                 .mt-3
                   button.btn.btn-danger(type='button', onclick=`deleteOrder('${order._id}')`) Cancella
@@ -47,11 +47,11 @@ html
             checkForRemainingOrders();
           } else {
             console.error('Error:', response.statusText);
-            alert('An error occurred while deleting the order');
+            alert('Errore nella conferma');
           }
         } catch (error) {
           console.error('Error:', error);
-          alert('An error occurred while deleting the order');
+          alert('Errore nella conferma');
         }
       }
 
@@ -74,11 +74,11 @@ html
             checkForRemainingOrders();
           } else {
             console.error('Error:', response.statusText);
-            alert('An error occurred while confirming the order');
+            alert('Errore nella rimozione');
           }
         } catch (error) {
           console.error('Error:', error);
-          alert('An error occurred while confirming the order');
+          alert('Errore nella rimozione');
         }
       }
 
