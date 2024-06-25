@@ -20,6 +20,10 @@ export async function calculate({ timeSent, peopleCount, preparation, orderData,
     const originalPizzaCount = orderData.roundPizza.count
     orderData.roundPizza.count = Math.ceil(orderData.roundPizza.count / 2)
 
+    //half round hot food count to account for 2 microwaves
+    const originalHotCount = orderData.hotFood.count
+    orderData.hotFood.count = Math.ceil(orderData.hotFood.count / 2)
+
     let minutesToAdd = 0
     const calculateAdditionalMinutes = (weight, variance) => {
         const random = getRandomInt(0, variance)
@@ -59,12 +63,13 @@ export async function calculate({ timeSent, peopleCount, preparation, orderData,
     console.log(`Order simulation complete! Final minutes calculated = ${minutesToAdd}`)
     const sentTimestamp = calculateTimestamp(hours, minutes)
     console.log(`Adding ${minutesToAdd} minutes to when the order was sent...`)
-    const finalTimestamp = adjustIfEarlyOrder(sentTimestamp + (minutesToAdd * 60))
+    const finalTimestamp = adjustIfEarlyOrder(sentTimestamp + minutesToAdd * 60)
 
     //if user is logged in, insert order in database
     if (user) {
         console.log(user)
         orderData.roundPizza.count = originalPizzaCount
+        orderData.hotFood.count = originalHotCount
         await insertOrder({
             food: orderData,
             sent_at: sentTimestamp,

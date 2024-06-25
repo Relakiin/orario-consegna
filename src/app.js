@@ -183,7 +183,7 @@ app.post('/calculate', async (req, res) => {
             },
             travelTime: { weight: 12, variance: 4 },
             walkTime: { weight: 2, variance: 2 },
-            multipliers: { fast: 0.85, slow: 1.1 },
+            multipliers: { fast: 0.8, slow: 1.05 },
         },
         user
     )

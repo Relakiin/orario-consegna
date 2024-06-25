@@ -3,6 +3,19 @@ html
   head
     title Gestione ordini
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+    style.
+      .spinner-border {
+        display: none;
+        width: 1rem;
+        height: 1rem;
+        border-width: .2em;
+      }
+      .btn-loading {
+        pointer-events: none;
+      }
+      .btn-loading .spinner-border {
+        display: inline-block;
+      }
     script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
     script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
@@ -14,7 +27,7 @@ html
       if orders.length > 0
         #order-list
           each order in orders
-            .card.mb-3(id=`order-${order._id}`)
+            .card.mb-3(id='order-' + order._id)
               .card-body
                 h5.card-title Ordine ##{order._id}
                 p.card-text
@@ -27,17 +40,26 @@ html
                   | Orario predetto: #{new Date(order.predicted_time).toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit', year: 'numeric', month: 'long', day: 'numeric' })}
                   br
                   | Orario di arrivo: 
-                  input(type='text', id=`arrived_at-${order._id}`, value=`${order.arrived_at || ''}`, placeholder='HH:MM' required)
+                  input(type='text', id='arrived_at-' + order._id, value=order.arrived_at || '', placeholder='HH:MM', required)
                   br 
                   | Consegna buona (cibo non sbagliato/mancante): 
-                  input(type='checkbox', id=`good-${order._id}`, checked=order.good)
+                  input(type='checkbox', id='good-' + order._id, checked=order.good)
                 .mt-3
-                  button.btn.btn-danger(type='button', onclick=`deleteOrder('${order._id}')`) Cancella
-                  button.btn.btn-success(type='button', onclick=`confirmOrder('${order._id}', '${order.predicted_time}')`) Conferma
+                  button.btn.btn-danger(id='deleteButton-' + order._id, type='button', onclick='deleteOrder("' + order._id + '")')
+                    .spinner-border(role='status', aria-hidden='true')
+                    span.sr-only Loading...
+                    | Cancella
+                  button.btn.btn-success(id='confirmButton-' + order._id, type='button', onclick='confirmOrder("' + order._id + '", "' + order.predicted_time + '")')
+                    .spinner-border(role='status', aria-hidden='true')
+                    span.sr-only Loading...
+                    | Conferma
       else
         .alert.alert-warning Nessun ordine da confermare
     script.
       async function deleteOrder(orderId) {
+        const deleteButton = document.getElementById(`deleteButton-${orderId}`);
+        deleteButton.classList.add('btn-loading');
+
         try {
           const response = await fetch(`/orders/${orderId}`, {
             method: 'DELETE'
@@ -47,15 +69,20 @@ html
             checkForRemainingOrders();
           } else {
             console.error('Error:', response.statusText);
-            alert('Errore nella conferma');
+            alert('Errore nella rimozione');
           }
         } catch (error) {
           console.error('Error:', error);
-          alert('Errore nella conferma');
+          alert('Errore nella rimozione');
+        } finally {
+          deleteButton.classList.remove('btn-loading');
         }
       }
 
       async function confirmOrder(orderId, predictTime) {
+        const confirmButton = document.getElementById(`confirmButton-${orderId}`);
+        confirmButton.classList.add('btn-loading');
+        
         const arrived_at = document.getElementById(`arrived_at-${orderId}`).value;
         const good = document.getElementById(`good-${orderId}`).checked;
         const predicted_time = predictTime;
@@ -74,11 +101,13 @@ html
             checkForRemainingOrders();
           } else {
             console.error('Error:', response.statusText);
-            alert('Errore nella rimozione');
+            alert('Errore nella conferma');
           }
         } catch (error) {
           console.error('Error:', error);
-          alert('Errore nella rimozione');
+          alert('Errore nella conferma');
+        } finally {
+          confirmButton.classList.remove('btn-loading');
         }
       }
 
