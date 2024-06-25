@@ -95,6 +95,9 @@ html
           form(action="/history")
             .form-group
               button.btn.btn-secondary(type="submit") Storico ordini
+          form(action="/logout" method="POST")
+            .form-group
+              button.btn.btn-danger(type="submit") Logout
         if !user
           .auth-buttons
             a.btn.btn-primary(href='/login') Login

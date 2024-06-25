@@ -121,6 +121,11 @@ app.get('/register', ensureNotAuthenticated, (req, res) => {
     res.render('register')
 })
 
+app.post('/logout', (req, res) => {
+    req.session = null; 
+    res.redirect('/');
+  });
+
 const foodNames = {
     roundPizza: 'Pizze tonde',
     salad: 'Insalate',
