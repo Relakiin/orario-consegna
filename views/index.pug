@@ -43,6 +43,13 @@ html
         width: 100%;
         color: #fff;
       }
+      .disabled {
+        pointer-events: none;
+        opacity: 0.6;
+      }
+      .auth-buttons {
+        margin-top: 20px;
+      }
   body
     .container
       .form-container
@@ -70,17 +77,30 @@ html
             label(for="hotFoodCount") Numero di cibo che va riscaldato:
             input.form-control(type="number" id="hotFoodCount" name="hotFoodCount" min=0 value=0 required)
           .form-group
-            button.btn.btn-primary(type="submit") Calcola e salva
+            if user
+              button.btn.btn-primary(type="submit") Calcola e salva
+            if !user
+              button.btn.btn-primary(type="submit") Calcola
       .info-container
         h1.mt-4 Gestione Ordini
-        form(action="/orders")
-          .form-group
-            if pendingOrders > 0
-              button.btn.btn-pending(type="submit") Ordini in pending (#{pendingOrders})
-            else
-              button.btn.btn-primary(type="submit") Ordini in pending
-        form(action="/history")
-          .form-group
-            button.btn.btn-secondary(type="submit") Storico ordini
+        if !user
+          p.text-danger Per favore, accedi per salvare i tuoi ordini.
+        if user
+          form(action="/orders")
+            .form-group
+              if pendingOrders > 0
+                button.btn.btn-pending(type="submit") Ordini in pending (#{pendingOrders})
+              else
+                button.btn.btn-primary(type="submit") Ordini in pending
+          form(action="/history")
+            .form-group
+              button.btn.btn-secondary(type="submit") Storico ordini
+        if !user
+          .auth-buttons
+            a.btn.btn-primary(href='/login') Login
+            a.btn.btn-secondary.mt-2(href='/register') Registrati
         if message
           h2= message
+    script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js')
+    script(src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')

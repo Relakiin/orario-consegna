@@ -1,6 +1,6 @@
 import { insertOrder } from './order.js'
 
-export async function calculate({ timeSent, peopleCount, preparation, orderData, travelTime, walkTime, multipliers }) {
+export async function calculate({ timeSent, peopleCount, preparation, orderData, travelTime, walkTime, multipliers }, user) {
     console.log({ timeSent, peopleCount, preparation, orderData, travelTime, walkTime, multipliers })
     const [hours, minutes] = timeSent.split(':').map(Number)
     console.log('Time the order was sent (h, m) =', hours, minutes)
@@ -59,18 +59,22 @@ export async function calculate({ timeSent, peopleCount, preparation, orderData,
     console.log(`Order simulation complete! Final minutes calculated = ${minutesToAdd}`)
     const sentTimestamp = calculateTimestamp(hours, minutes)
     console.log(`Adding ${minutesToAdd} minutes to when the order was sent...`)
-    const finalTimestamp = sentTimestamp + (minutesToAdd * 60)
+    const finalTimestamp = adjustIfEarlyOrder(sentTimestamp + (minutesToAdd * 60))
 
-    //insert order in database
-    orderData.roundPizza.count = originalPizzaCount
-    await insertOrder({
-        food: orderData,
-        sent_at: sentTimestamp,
-        predicted_time: finalTimestamp,
-        status: 'pending',
-        good: false,
-        correct_prediction: false,
-    })
+    //if user is logged in, insert order in database
+    if (user) {
+        console.log(user)
+        orderData.roundPizza.count = originalPizzaCount
+        await insertOrder({
+            food: orderData,
+            sent_at: sentTimestamp,
+            predicted_time: finalTimestamp,
+            status: 'pending',
+            good: false,
+            correct_prediction: false,
+            user_id: user._id,
+        })
+    }
 
     const date = new Date(finalTimestamp * 1000)
     const formattedDate = date.toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -88,4 +92,27 @@ export function calculateTimestamp(hours, minutes) {
     const currentDate = new Date()
     currentDate.setHours(hours, minutes, 0, 0)
     return Math.floor(currentDate.getTime() / 1000)
+}
+
+function adjustIfEarlyOrder(unixTimestamp) {
+    const now = new Date()
+
+    const timestampDate = new Date(unixTimestamp * 1000)
+
+    // check if the timestamp is from the same day as today
+    if (timestampDate.getDate() === now.getDate() && timestampDate.getMonth() === now.getMonth() && timestampDate.getFullYear() === now.getFullYear()) {
+        // check if the time is before 13:00
+        if (timestampDate.getHours() < 13) {
+            console.log('##################EARLY ORDER DETECTED')
+
+            timestampDate.setHours(13, 0, 0, 0)
+
+            const randomMinutes = getRandomInt(0, 20)
+            timestampDate.setMinutes(randomMinutes)
+
+            unixTimestamp = Math.floor(timestampDate.getTime() / 1000)
+        }
+    }
+
+    return unixTimestamp
 }
