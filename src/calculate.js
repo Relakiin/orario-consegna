@@ -67,7 +67,7 @@ export async function calculate({ timeSent, peopleCount, preparation, orderData,
 
     //if user is logged in, insert order in database
     if (user) {
-        console.log(user)
+        console.log("Inserting new order from", user.username)
         orderData.roundPizza.count = originalPizzaCount
         orderData.hotFood.count = originalHotCount
         await insertOrder({
@@ -108,7 +108,7 @@ function adjustIfEarlyOrder(unixTimestamp) {
     if (timestampDate.getDate() === now.getDate() && timestampDate.getMonth() === now.getMonth() && timestampDate.getFullYear() === now.getFullYear()) {
         // check if the time is before 13:00
         if (timestampDate.getHours() < 13) {
-            console.log('##################EARLY ORDER DETECTED')
+            console.log('################## EARLY ORDER DETECTED')
 
             timestampDate.setHours(13, 0, 0, 0)
 
