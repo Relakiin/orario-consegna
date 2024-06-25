@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Storico ordini
+    title Storico ordini di #{user.username}
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
     script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
@@ -60,7 +60,7 @@ html
       }
   body
     .container
-      h1 Storico ordini
+      h1 Storico ordini di #{user.username}
       button.btn.btn-primary.mb-3(type='button', onclick="window.location.href='/'") Ritorna alla home
       button.btn.btn-secondary.mb-3.ml-2(type='button', onclick="window.location.href='/orders'") Gestione ordini
       .card.mb-3

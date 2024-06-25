@@ -8,7 +8,7 @@ html
     script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
   body
     .container
-      h1 Ordini in pending
+      h1 Ordini in pending per #{user.username}
       button.btn.btn-primary.mb-3(type='button', onclick="window.location.href='/'") Ritorna alla home
       button.btn.btn-secondary.mb-3.ml-2(type='button', onclick="window.location.href='/history'") Vedi storico
       if orders.length > 0
