@@ -171,9 +171,9 @@ app.post('/calculate', async (req, res) => {
             orderData: {
                 kebab: { count: kebabCount, weight: 5, variance: 2 },
                 roundPizza: { count: roundPizzaCount, weight: 6, variance: 3 },
-                salad: { count: saladCount, weight: 2, variance: 3 },
+                salad: { count: saladCount, weight: 1, variance: 2 },
                 slicedPizza: { count: slicedPizzaCount, weight: 1, variance: 2 },
-                hotFood: { count: hotFoodCount, weight: 5, variance: 2 },
+                hotFood: { count: hotFoodCount, weight: 3, variance: 2 },
                 other: {
                     count: peopleCount - (kebabCount + roundPizzaCount + saladCount + hotFoodCount),
                     weight: 3,
